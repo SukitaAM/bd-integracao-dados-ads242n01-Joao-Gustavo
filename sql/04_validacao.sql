@@ -56,7 +56,7 @@ ORDER BY v.venda_id;
 -- V2. Vendas em filiais (2 e 3) que não têm nenhum produto cadastrado -> 4 linhas
 SELECT  v.venda_id, v.filial_id, v.produto_id, v.data_emissao
 FROM    public.venda v
-WHERE   v.filial_id NOT IN (SELECT DISTINCT filial_id FROM public.produtos_filial)
+WHERE NOT EXISTS (SELECT 1 FROM public.produtos_filial p WHERE p.filial_id = v.filial_id)
 ORDER BY v.venda_id;
 
 -- V3. Quantidade fracionada em unidade "UN" (não existe 2,86 unidade) -> 5 linhas
