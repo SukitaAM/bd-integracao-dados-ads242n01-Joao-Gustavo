@@ -37,7 +37,7 @@ DB = {
     "port": int(os.getenv("PGPORT", "5432")),   # PostgreSQL 5432 (MySQL usa 3306)
     "dbname": os.getenv("PGDATABASE", "postgres"),
     "user": os.getenv("PGUSER", "postgres"),
-    "password": os.getenv("PGPASSWORD", "sua_senha_aqui"),  # valor de exemplo
+    "password": os.getenv("PGPASSWORD", ""),  # valor de exemplo
 }
 
 
