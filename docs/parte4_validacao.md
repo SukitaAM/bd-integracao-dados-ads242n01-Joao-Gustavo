@@ -68,3 +68,20 @@ Objetivo da reunião: que o cliente saia sabendo (1) o que foi carregado, (2) qu
 | produtos_filial | `preco_unitario` diferente de `preco_venda` (dois preços para o mesmo produto) | 20 linhas | V17 |
 | produtos_filial / fornecedor | Fornecedores sem produto (F14, F15, F16): informativo | 3 linhas | V18 |
 | produtos_filial / fornecedor | `idfornecedor` em texto (`F8`) na planilha, numérico no DDL | 20 + 20 linhas (tratado na carga) | conversão em `importar.py` |
+
+## Decisões que o cliente precisa tomar após a reunião
+
+Os dados foram carregados exatamente como vieram da planilha. Nenhum valor foi alterado sem aprovação. Para cada problema, a decisão que preciso do cliente:
+
+| Problema (consulta) | Decisão necessária | Opções |
+| --- | --- | --- |
+| Produtos P21 a P28 vendidos e sem cadastro (V1) | Cadastrar os produtos ou excluir as vendas? | Incluir em `produtos_filial` / manter como "sem cadastro" nos relatórios |
+| Filiais 2 e 3 sem produtos (V2) | As filiais existem? | Cadastrar os produtos nas filiais / corrigir o `filial_id` das vendas |
+| Quantidade fracionada em `UN` (V3) | Qual é a unidade correta? | Trocar a unidade (kg, L) / corrigir a quantidade |
+| `ordem_compra = 0` (V8) e entradas NFE19 e NFE20 sem pedido (V12) | Qual ordem pertence a cada pedido? | Informar as ordens corretas para refazer o vínculo |
+| Pedidos 21 a 29 repetidos (V9) | São duplicatas ou pedidos novos? | Excluir as duplicatas / manter com ordem válida |
+| Datas invertidas (V7, V13) | Qual data está errada? | Corrigir `data_pedido` ou `data_entrega` |
+| Dois preços no cadastro (V17) e preço abaixo do custo (V16) | Qual é o preço oficial de venda? | Definir `preco_venda` e descontinuar `preco_unitario`, ou o contrário |
+| Custo da nota diferente do pedido (V15) | O preço mudou depois do pedido? | Aceitar a nota / pedir ajuste ao fornecedor |
+
+Cada correção aprovada será aplicada por um script `UPDATE` revisado, com registro do que mudou, a data e o motivo, e as consultas V1 a V18 serão rodadas de novo para provar que o problema sumiu.
