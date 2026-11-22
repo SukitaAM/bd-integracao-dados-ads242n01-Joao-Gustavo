@@ -90,3 +90,22 @@ Resultado de rodar o script original: **0 linhas em `venda` e 0 em `pedido_compr
 | pedido_compra | 29 | 29 |
 | entradas_mercadoria | 20 | 20 |
 | venda | 33 | 33 |
+## Como reproduzir e conferir a carga
+
+1. Criar as tabelas: `psql -d SEU_BANCO -f sql/01_ddl_postgres.sql`
+2. Importar: `python scripts/importar.py dados/base_teste.xlsx` (credenciais por variáveis de ambiente: `PGHOST`, `PGPORT`, `PGDATABASE`, `PGUSER` e `PGPASSWORD`)
+3. O próprio script imprime, no fim, planilha x banco e marca `OK` ou `DIVERGE` por tabela.
+4. Conferência manual, no banco:
+
+        SELECT 'fornecedor' AS tabela, COUNT(*) FROM public.fornecedor
+        UNION ALL SELECT 'produtos_filial', COUNT(*) FROM public.produtos_filial
+        UNION ALL SELECT 'pedido_compra', COUNT(*) FROM public.pedido_compra
+        UNION ALL SELECT 'entradas_mercadoria', COUNT(*) FROM public.entradas_mercadoria
+        UNION ALL SELECT 'venda', COUNT(*) FROM public.venda;
+
+   Esperado: 20, 20, 29, 20 e 33.
+
+## Limitações conhecidas
+
+- A carga automática é só para PostgreSQL. No MySQL, o DDL foi validado, mas a carga deve ser feita pelo DBeaver (Import Data) ou adaptando o driver do script.
+- O script não corrige os dados "errados" da planilha de propósito (ver Parte 4).
